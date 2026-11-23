@@ -9,8 +9,9 @@ def create_app(test_config=None):
     app.config.from_mapping(
         # a default secret that should be overridden by instance config
         SECRET_KEY="dev",
-        # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
+        # store the database in the instance folder using SQLAlchemy
+        SQLALCHEMY_DATABASE_URI=f"sqlite:///{os.path.join(app.instance_path, 'flaskr.sqlite')}",
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
     )
 
     if test_config is None:
@@ -28,9 +29,13 @@ def create_app(test_config=None):
         return "Hello, World!"
 
     # register the database commands
-    from . import db
+    
+  # inicializa o SQLAlchemy e cria as tabelas automaticamente
+    from .models import db
 
     db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     # apply the blueprints to the app
     from . import auth
