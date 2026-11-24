@@ -1,25 +1,59 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Edit "{{ post.title }}"{% endblock %}</h1>
+  <h1 class="h3 mb-0">{% block title %}Editar "{{ post.title }}"{% endblock %}</h1>
+  <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('index') }}">Voltar</a>
 {% endblock %}
 
 {% block content %}
- <form method="post" enctype="multipart/form-data">
-    <label for="title">Title</label>
-    <input name="title" id="title" value="{{ request.form['title'] or post.title}}" required>
-    <label for="body">Body</label>
-    <textarea name="body" id="body">{{ request.form['body'] or post.body }}</textarea>
-    {% if post.imagem_post %}
-      <p>Imagem atual:</p>
-      <img src="{{ url_for('static', filename='uploads/' + post.imagem_post) }}" alt="Imagem do post" style="max-width: 200px;">
-    {% endif %}
-    <label for="imagem_post">Alterar Imagem do Post (opcional)</label>
-    <input type="file" name="imagem_post" id="imagem_post" accept="image/*">
-    <input type="submit" value="Save">
-  </form>
-  <hr>
-  <form action="{{ url_for('blog.delete', id=post.id) }}" method="post">
-    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
-  </form>
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <form method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="title" class="form-label">Título</label>
+              <input type="text" name="title" id="title" class="form-control"
+                     value="{{ request.form['title'] or post.title }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="body" class="form-label">Conteúdo</label>
+              <textarea name="body" id="body" rows="6" class="form-control" required>{{ request.form['body'] or post.body }}</textarea>
+            </div>
+
+            {% if post.imagem_post %}
+              <div class="mb-3">
+                <label class="form-label d-block">Imagem Atual</label>
+                <img src="{{ url_for('static', filename='uploads/' + post.imagem_post) }}"
+                     alt="Imagem atual do post"
+                     class="img-thumbnail"
+                     style="max-height: 200px; object-fit: cover;">
+              </div>
+            {% endif %}
+
+            <div class="mb-4">
+              <label for="imagem_post" class="form-label">Substituir Imagem <span class="text-muted small">(opcional)</span></label>
+              <input type="file" name="imagem_post" id="imagem_post" class="form-control" accept="image/*">
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+              <a class="btn btn-outline-secondary" href="{{ url_for('index') }}">Cancelar</a>
+              <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </div>
+          </form>
+
+          <hr class="my-4">
+
+          <form action="{{ url_for('blog.delete', id=post.id) }}" method="post" class="d-flex justify-content-between align-items-center">
+            <span class="text-muted small">Esta ação não pode ser desfeita.</span>
+            <button type="submit" class="btn btn-outline-danger btn-sm"
+                    onclick="return confirm('Tem certeza que deseja excluir este post?');">
+              Excluir Post
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

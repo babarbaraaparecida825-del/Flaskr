@@ -82,7 +82,7 @@ def painel():
                 flash("Informe valores numéricos válidos para o cálculo de rescisão.")
 
     return render_template(
-        "calculos/painel.html",
+        "calculos/index.html",
         resultado_irpf=resultado_irpf,
         resultado_rescisao=resultado_rescisao,
     )

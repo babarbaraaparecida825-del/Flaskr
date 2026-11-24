@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1 class="h3 mb-0">{% block title %}Painel de Cálculos Financeiros{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="row g-4">
+    <!-- Coluna 1: IRPF -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-white py-3">
+          <h2 class="h5 mb-0">Cálculo de IRPF</h2>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <form method="post">
+            <input type="hidden" name="tipo_calculo" value="irpf">
+
+            <div class="mb-3">
+              <label for="salario_bruto" class="form-label">Salário Bruto (R$)</label>
+              <input type="number" step="0.01" min="0" name="salario_bruto" id="salario_bruto"
+                     class="form-control" placeholder="Ex: 5000.00"
+                     value="{{ resultado_irpf.salario_bruto if resultado_irpf else '' }}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Calcular IRPF</button>
+          </form>
+
+          {% if resultado_irpf %}
+            <div class="mt-4 pt-3 border-top">
+              <h3 class="h6 text-muted mb-3">Resultado Estimado</h3>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item px-0 d-flex justify-content-between">
+                  <span>Salário Bruto</span>
+                  <strong>R$ {{ "%.2f"|format(resultado_irpf.salario_bruto) }}</strong>
+                </li>
+                <li class="list-group-item px-0 d-flex justify-content-between">
+                  <span>Alíquota Aplicada</span>
+                  <span class="badge bg-secondary">{{ resultado_irpf.aliquota }}%</span>
+                </li>
+                <li class="list-group-item px-0 d-flex justify-content-between">
+                  <span>Desconto Estimado de IRPF</span>
+                  <strong class="text-danger">- R$ {{ "%.2f"|format(resultado_irpf.desconto) }}</strong>
+                </li>
+                <li class="list-group-item px-0 d-flex justify-content-between">
+                  <span>Salário após IRPF</span>
+                  <strong class="text-success">R$ {{ "%.2f"|format(resultado_irpf.salario_liquido) }}</strong>
+                </li>
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Coluna 2: Rescisão / 13º Proporcional -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-white py-3">
+          <h2 class="h5 mb-0">Rescisão Trabalhista (13º Proporcional)</h2>
+        </div>
+        <div class="card-body d-flex flex-column">
+          <form method="post">
+            <input type="hidden" name="tipo_calculo" value="rescisao">
+
+            <div class="mb-3">
+              <label for="salario_base" class="form-label">Salário Base (R$)</label>
+              <input type="number" step="0.01" min="0" name="salario_base" id="salario_base"
+                     class="form-control" placeholder="Ex: 3600.00"
+                     value="{{ resultado_rescisao.salario_base if resultado_rescisao else '' }}" required>
+            </div>
+
+            <div class="mb-3">
+              <label for="meses_trabalhados" class="form-label">Meses Trabalhados no Ano (1 a 12)</label>
+              <input type="number" min="1" max="12" name="meses_trabalhados" id="meses_trabalhados"
+                     class="form-control" placeholder="Ex: 6"
+                     value="{{ resultado_rescisao.meses_trabalhados if resultado_rescisao else '' }}" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Calcular 13º Proporcional</button>
+          </form>
+
+          {% if resultado_rescisao %}
+            <div class="mt-4 pt-3 border-top">
+              <h3 class="h6 text-muted mb-3">Resultado Estimado</h3>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item px-0 d-flex justify-content-between">
+                  <span>Salário Base</span>
+                  <strong>R$ {{ "%.2f"|format(resultado_rescisao.salario_base) }}</strong>
+                </li>
+                <li class="list-group-item px-0 d-flex justify-content-between">
+                  <span>Meses Trabalhados</span>
+                  <span class="badge bg-secondary">{{ resultado_rescisao.meses_trabalhados }}/12</span>
+                </li>
+                <li class="list-group-item px-0 d-flex justify-content-between">
+                  <span>13º Proporcional Aproximado</span>
+                  <strong class="text-success">R$ {{ "%.2f"|format(resultado_rescisao.valor_proporcional) }}</strong>
+                </li>
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
